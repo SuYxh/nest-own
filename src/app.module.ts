@@ -15,6 +15,7 @@ import { WhitelistMiddleware } from './middleware/whitelist.middleware';
 import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { join } from 'path';
     PostModule,
     AuthModule,
     FilesModule,
+    MailModule,
   ],
 
   controllers: [AppController],
