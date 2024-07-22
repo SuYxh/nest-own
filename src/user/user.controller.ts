@@ -8,6 +8,7 @@ import {
   Param,
   ParseIntPipe,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../entity/user.entity';
@@ -26,7 +27,8 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get()
-  async findAll(): Promise<User[]> {
+  async findAll(@Request() req): Promise<User[]> {
+    console.log('findAll-req', req.user);
     return await this.userService.findAll();
   }
 
