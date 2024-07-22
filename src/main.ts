@@ -9,6 +9,12 @@ async function bootstrap() {
   app.useGlobalInterceptors(new CustomResponse());
   app.useGlobalFilters(new AllExceptionsFilter());
 
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   await app.listen(3001);
 }
 bootstrap();
