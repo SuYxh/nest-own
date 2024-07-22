@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -7,13 +7,18 @@ import { UserModule } from './user/user.module';
 import { CustomConfigModule } from './config/config.module';
 import { PostModule } from './post/post.module';
 import { AuthModule } from './auth/auth.module';
+import { WinstonModule } from 'nest-winston';
+import logger from './logger/winston.config';
 import envConfig from '../config/env';
-
+import { LoggerMiddleware } from './middleware/logger.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true, // 设置为全局
       envFilePath: [envConfig.path],
+    }),
+    WinstonModule.forRoot({
+      instance: logger,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -41,4 +46,10 @@ import envConfig from '../config/env';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

@@ -9,16 +9,22 @@ import {
   ParseIntPipe,
   UseGuards,
   Request,
+  Inject,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {}
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
@@ -29,6 +35,7 @@ export class UserController {
   @Get()
   async findAll(@Request() req): Promise<User[]> {
     console.log('findAll-req', req.user);
+    this.logger.info('Fetching all users');
     return await this.userService.findAll();
   }
 
