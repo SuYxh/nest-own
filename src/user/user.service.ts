@@ -62,4 +62,8 @@ export class UserService {
     }
     await this.userRepository.delete(id);
   }
+
+  async findOneByUsername(username: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { username } });
+  }
 }
