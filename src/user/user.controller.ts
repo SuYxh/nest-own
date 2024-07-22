@@ -10,6 +10,7 @@ import {
   UseGuards,
   Request,
   Inject,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../entity/user.entity';
@@ -37,6 +38,15 @@ export class UserController {
     console.log('findAll-req', req.user);
     this.logger.info('Fetching all users');
     return await this.userService.findAll();
+  }
+
+  @Get('/page')
+  async findAllPaginated(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    console.log('page,limit', page, limit);
+    return await this.userService.findAllPaginated(page, limit);
   }
 
   @Get(':id')

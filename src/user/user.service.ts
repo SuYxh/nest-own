@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindOneOptions } from 'typeorm';
+import { Repository, FindOneOptions, FindManyOptions } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -65,5 +65,17 @@ export class UserService {
 
   async findOneByUsername(username: string): Promise<User | undefined> {
     return this.userRepository.findOne({ where: { username } });
+  }
+
+  async findAllPaginated(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ list: User[]; page: number; total: number }> {
+    const options: FindManyOptions<User> = {
+      skip: (page - 1) * limit,
+      take: limit,
+    };
+    const [list, total] = await this.userRepository.findAndCount(options);
+    return { list, page, total };
   }
 }
