@@ -12,9 +12,12 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { Response } from 'express';
 import { format } from 'date-fns';
+import { FilesService } from './files.service';
 
 @Controller('files')
 export class FilesController {
+  constructor(private readonly filesService: FilesService) {}
+
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -48,5 +51,12 @@ export class FilesController {
   @Get(':filename')
   getFile(@Param('filename') filename: string, @Res() res: Response) {
     res.sendFile(filename, { root: './public' });
+  }
+
+  @Post('uploadQiniu')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadToQiniu(@UploadedFile() file: Express.Multer.File) {
+    const url = await this.filesService.uploadFile(file);
+    return { url };
   }
 }
