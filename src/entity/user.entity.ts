@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Transform } from 'class-transformer';
+import { Transform, Exclude } from 'class-transformer';
 import { format } from 'date-fns';
 
 @Entity()
@@ -17,6 +17,7 @@ export class User {
   username: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @Column({ unique: true })
