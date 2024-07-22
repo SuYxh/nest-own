@@ -4,6 +4,7 @@ import { Repository, FindOneOptions } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -13,7 +14,15 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = this.userRepository.create(createUserDto);
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(
+      createUserDto.password,
+      saltRounds,
+    );
+    const user = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
     return await this.userRepository.save(user);
   }
 
@@ -34,6 +43,13 @@ export class UserService {
     const existingUser = await this.findOne(id);
     if (!existingUser) {
       throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    if (updateUserDto.password) {
+      const saltRounds = 10;
+      updateUserDto.password = await bcrypt.hash(
+        updateUserDto.password,
+        saltRounds,
+      );
     }
     await this.userRepository.update(id, updateUserDto);
     return await this.userRepository.findOne({ where: { id } });
