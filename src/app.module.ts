@@ -4,6 +4,7 @@ import { ConfigService, ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { CustomConfigModule } from './config/config.module';
 import envConfig from '../config/env';
 
 @Module({
@@ -30,6 +31,7 @@ import envConfig from '../config/env';
       }),
     }),
     UserModule,
+    CustomConfigModule,
   ],
 
   controllers: [AppController],
