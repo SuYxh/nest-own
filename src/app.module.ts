@@ -12,6 +12,10 @@ import logger from './logger/winston.config';
 import envConfig from '../config/env';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { WhitelistMiddleware } from './middleware/whitelist.middleware';
+import { FilesModule } from './files/files.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,6 +24,11 @@ import { WhitelistMiddleware } from './middleware/whitelist.middleware';
     }),
     WinstonModule.forRoot({
       instance: logger,
+    }),
+    ServeStaticModule.forRoot({
+      // rootPath: join(__dirname, '..', 'public'),
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: '/public', // 可选，指定静态文件服务的根路径
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -42,6 +51,7 @@ import { WhitelistMiddleware } from './middleware/whitelist.middleware';
     CustomConfigModule,
     PostModule,
     AuthModule,
+    FilesModule,
   ],
 
   controllers: [AppController],
