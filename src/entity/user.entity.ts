@@ -5,6 +5,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Transform } from 'class-transformer';
+import { format } from 'date-fns';
 
 @Entity()
 export class User {
@@ -30,8 +32,14 @@ export class User {
   role: string;
 
   @CreateDateColumn()
+  @Transform(({ value }) => format(value, 'yyyy-MM-dd HH:mm:ss'), {
+    toClassOnly: true,
+  })
   createdAt: Date;
 
   @UpdateDateColumn()
+  @Transform(({ value }) => format(value, 'yyyy-MM-dd HH:mm:ss'), {
+    toClassOnly: true,
+  })
   updatedAt: Date;
 }

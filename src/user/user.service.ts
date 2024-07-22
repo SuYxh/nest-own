@@ -5,6 +5,7 @@ import { User } from '../entity/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -76,6 +77,6 @@ export class UserService {
       take: limit,
     };
     const [list, total] = await this.userRepository.findAndCount(options);
-    return { list, page, total };
+    return { list: list.map((user) => plainToClass(User, user)), page, total };
   }
 }
