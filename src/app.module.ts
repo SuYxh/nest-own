@@ -11,6 +11,7 @@ import { WinstonModule } from 'nest-winston';
 import logger from './logger/winston.config';
 import envConfig from '../config/env';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { WhitelistMiddleware } from './middleware/whitelist.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -48,6 +49,15 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(WhitelistMiddleware)
+      // 可以排除某些路由
+      // .exclude(
+      //   { path: 'public', method: RequestMethod.GET },
+      //   { path: 'public', method: RequestMethod.POST },
+      // )
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+
     consumer
       .apply(LoggerMiddleware)
       .forRoutes({ path: '*', method: RequestMethod.ALL });
