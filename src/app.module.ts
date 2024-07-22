@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { CustomConfigModule } from './config/config.module';
+import { PostModule } from './post/post.module';
 import envConfig from '../config/env';
 
 @Module({
@@ -32,6 +33,7 @@ import envConfig from '../config/env';
     }),
     UserModule,
     CustomConfigModule,
+    PostModule,
   ],
 
   controllers: [AppController],
